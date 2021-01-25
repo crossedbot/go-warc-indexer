@@ -22,7 +22,7 @@ func compress(r io.Reader, c simplewarc.CompressionType) (io.Reader, error) {
 	switch c {
 	case simplewarc.GzipCompression:
 		gzw := gzip.NewWriter(buf)
-		defer gzw.Flush()
+		defer gzw.Close()
 		w = gzw
 	case simplewarc.NoCompression:
 		// just use the buffer if no compression is selected

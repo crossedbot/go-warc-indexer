@@ -7,6 +7,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"strconv"
@@ -38,7 +39,7 @@ func generateRandomString(n int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return base64.URLEncoding.EncodeToString(b), nil
+	return base64.URLEncoding.EncodeToString(b)[:n], nil
 }
 
 // newNonce returns a new nonce for the given size
@@ -65,8 +66,19 @@ func newExtendedKey(key, salt []byte) []byte {
 	)
 }
 
-// newAesGcmKey returns a new GCM wrapped AES cipher block
+// newAesGcmKey returns a new GCM wrapped AES cipher block; keys should be 16,
+// 24, or 32 bytes in length to select AES-128, AES-192, or AES-256 respectively
 func newAesGcmKey(key []byte) (cipher.AEAD, error) {
+	switch len(key) {
+	// check key length
+	case 16, 24, 32:
+	default:
+		return nil, fmt.Errorf(
+			"invalid key length (%d); %s",
+			len(key),
+			"accepted lengths are 16, 24, or 32 bytes",
+		)
+	}
 	c, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
