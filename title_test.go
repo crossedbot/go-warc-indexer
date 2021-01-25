@@ -11,10 +11,10 @@ import (
 func TestGetTitle(t *testing.T) {
 	body := []byte(`<html>
 <head>
-	<title>Hello</title>
+<title>Hello</title>
 </head>
 <body>
-	<h1>Hello, World!</h1>
+<h1>Hello, World!</h1>
 </body>
 </html>`)
 	expected := "Hello"
@@ -59,13 +59,13 @@ func TestMatchTitle(t *testing.T) {
 
 func TestNodesToText(t *testing.T) {
 	body := []byte(`<html>
-	<head>
-	<title>Hello</title>
-	</head>
-	<body>
-	<h1>Hello, World!</h1>
-	</body>
-	</html>`)
+<head>
+<title>Hello</title>
+</head>
+<body>
+<h1>Hello, World!</h1>
+</body>
+</html>`)
 	doc, err := html.Parse(bytes.NewReader(body))
 	require.Nil(t, err)
 	nodes := matchTitle(doc, nil)
