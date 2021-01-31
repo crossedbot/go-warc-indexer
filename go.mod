@@ -1,4 +1,4 @@
-module warcindexer
+module github.com/crossedbot/go-warc-indexer
 
 go 1.14
 
