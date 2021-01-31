@@ -88,7 +88,7 @@ func (in *indexer) Index(name string) (simplecdxj.CDXJ, error) {
 		VersionValue,
 		len(cdxj.Records),
 	)
-	return simplecdxj.CDXJ{}, nil
+	return cdxj, nil
 }
 
 // SetEncryptionKey sets the encryption key and salt
