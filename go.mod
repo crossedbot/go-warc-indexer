@@ -3,6 +3,7 @@ module github.com/crossedbot/go-warc-indexer
 go 1.14
 
 require (
+	github.com/crossedbot/common v0.0.0-20210203015813-0e121789bea8
 	github.com/crossedbot/simplecdxj v0.0.0-20210105051219-8025b2add98e
 	github.com/crossedbot/simplesurt v0.0.0-20201227230012-3d428f26273a
 	github.com/crossedbot/simplewarc v0.0.0-20210108053025-06a0f7c6238c

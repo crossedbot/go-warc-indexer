@@ -92,3 +92,17 @@ func TestCdxjRecord(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, expected, actual)
 }
+
+func TestSha1Sum(t *testing.T) {
+	r := bytes.NewReader([]byte("helloworld"))
+	expected := string([]byte{
+		0x6a, 0xdf, 0xb1, 0x83,
+		0xa4, 0xa2, 0xc9, 0x4a,
+		0x2f, 0x92, 0xda, 0xb5,
+		0xad, 0xe7, 0x62, 0xa4,
+		0x78, 0x89, 0xa5, 0xa1,
+	})
+	actual, err := sha1Sum(r)
+	require.Nil(t, err)
+	require.Equal(t, expected, actual)
+}

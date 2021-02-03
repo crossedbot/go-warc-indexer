@@ -10,6 +10,8 @@ import (
 	ipfshttpapi "github.com/ipfs/go-ipfs-http-client"
 	ma "github.com/multiformats/go-multiaddr"
 
+	"github.com/crossedbot/common/golang/crypto"
+	"github.com/crossedbot/common/golang/crypto/aes"
 	"github.com/crossedbot/simplecdxj"
 	"github.com/crossedbot/simplewarc"
 )
@@ -101,8 +103,8 @@ func (in *indexer) SetEncryptionKey(key, salt []byte) {
 // header and payload separately before pushing to IPFS
 func (in *indexer) indexRecord(ref string, rec *simplewarc.Record) (*simplecdxj.Record, error) {
 	// generate encryption values
-	keyId := getKeyId(in.key)
-	key, nonce, err := newKey(in.key, in.salt)
+	keyId := crypto.KeyId(in.key)
+	key, nonce, err := aes.NewKey(in.key, in.salt)
 	if err != nil {
 		return nil, err
 	}

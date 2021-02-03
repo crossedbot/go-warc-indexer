@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"testing"
 
+	"github.com/crossedbot/common/golang/crypto/aes"
 	"github.com/crossedbot/simplewarc"
 	"github.com/stretchr/testify/require"
 )
@@ -43,7 +44,7 @@ func TestPrepare(t *testing.T) {
 	original := []byte("goodbyeworld")
 	key := []byte("helloworld")
 	salt := []byte("saltsalt")
-	aead, nonce, err := newKey(key, salt)
+	aead, nonce, err := aes.NewKey(key, salt)
 	require.Nil(t, err)
 	r, err := compress(
 		bytes.NewReader(original),
