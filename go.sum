@@ -35,6 +35,8 @@ github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3Ee
 github.com/cpuguy83/go-md2man v1.0.10/go.mod h1:SmD6nW6nTyfqj6ABTjUi3V3JVMnlJmwcJI5acqYI6dE=
 github.com/crackcomm/go-gitignore v0.0.0-20170627025303-887ab5e44cc3 h1:HVTnpeuvF6Owjd5mniCL8DEXo7uYXdQEmOP4FJbV5tg=
 github.com/crackcomm/go-gitignore v0.0.0-20170627025303-887ab5e44cc3/go.mod h1:p1d6YEZWvFzEh4KLyvBcVSnrfNDDvK2zfK/4x2v/4pE=
+github.com/crossedbot/common v0.0.0-20210203015813-0e121789bea8 h1:8F9TmDmJmkbXWFdyiNOolo+Jp2EVDexDZoZNrEmx5H8=
+github.com/crossedbot/common v0.0.0-20210203015813-0e121789bea8/go.mod h1:pr4XbsUIx2obtNaSWAIMmWcJrdJV89KaQfY9cRA1H+4=
 github.com/crossedbot/simplecdxj v0.0.0-20210105051219-8025b2add98e h1:YvHe4G2KXIjhwkM7oajaiA+Y3CO8rRO4Kg7lp+fdOZk=
 github.com/crossedbot/simplecdxj v0.0.0-20210105051219-8025b2add98e/go.mod h1:fVr5AKQ5zqtUxb9JE6g9ZyoNIq4om8InT/Itwqzug3k=
 github.com/crossedbot/simplesurt v0.0.0-20201227230012-3d428f26273a h1:t7oZBZEsApRvYGmyzSP0yIcnygeRiJ8vh1tid5tedFE=
