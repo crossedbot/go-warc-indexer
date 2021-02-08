@@ -67,7 +67,7 @@ func TestCdxjRecord(t *testing.T) {
 		encMethod: "aes-gcm",
 		nonce:     []byte("qYiUZUNB"),
 	}
-	jb := jsonBlock{
+	jb := JsonBlock{
 		Uri:              warc.Header["warc-target-uri"],
 		Ref:              fmt.Sprintf("warcfile:%s#%d", meta.ref, warc.Offset),
 		Sha:              string(sha[:]),

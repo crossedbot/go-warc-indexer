@@ -26,8 +26,8 @@ type metadata struct {
 	nonce     []byte // Encryption Nonce
 }
 
-// jsonBlock represents the content block (AKA payload) of the CDXJ record
-type jsonBlock struct {
+// JsonBlock represents the content block (AKA payload) of the CDXJ record
+type JsonBlock struct {
 	// Defined Fields
 	Uri string `json:"uri"`
 	Ref string `json:"ref"`
@@ -69,7 +69,7 @@ func cdxjRecord(md metadata, rec *simplewarc.Record) (*simplecdxj.Record, error)
 	if err != nil {
 		return nil, err
 	}
-	jb := jsonBlock{
+	jb := JsonBlock{
 		Uri:              hdr.Get("warc-target-uri"),
 		Ref:              fmt.Sprintf("warcfile:%s#%d", md.ref, rec.Offset),
 		Sha:              sha,
