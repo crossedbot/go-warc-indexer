@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	ipfshttpapi "github.com/ipfs/go-ipfs-http-client"
@@ -74,7 +75,7 @@ func (in *indexer) Index(name string) (simplecdxj.CDXJ, error) {
 	}
 	for rec != nil {
 		if rec.Header.Get("warc-type") == "response" {
-			indexed, err := in.indexRecord(name, rec)
+			indexed, err := in.indexRecord(filepath.Base(name), rec)
 			if err != nil {
 				return simplecdxj.CDXJ{}, err
 			}
@@ -114,7 +115,10 @@ func (in *indexer) indexRecord(ref string, rec *simplewarc.Record) (*simplecdxj.
 		return nil, err
 	}
 	defer resp.Body.Close()
-	title, err := getTitle(resp.Body)
+	// retrieve the title of the document
+	var body bytes.Buffer
+	tee := io.TeeReader(resp.Body, &body)
+	title, err := getTitle(tee)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +127,7 @@ func (in *indexer) indexRecord(ref string, rec *simplewarc.Record) (*simplecdxj.
 	if err != nil {
 		return nil, err
 	}
-	preparedPayload, err := prepare(resp.Body, key, nonce)
+	preparedPayload, err := prepare(&body, key, nonce)
 	if err != nil {
 		return nil, err
 	}
