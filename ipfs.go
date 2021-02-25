@@ -44,8 +44,12 @@ func prepare(r io.Reader, key cipher.AEAD, nonce []byte) ([]byte, error) {
 	if _, err := buf.ReadFrom(r); err != nil {
 		return nil, err
 	}
-	cipher := key.Seal(nil, nonce, buf.Bytes(), nil)
-	return []byte(base64.URLEncoding.EncodeToString(cipher)), nil
+	msg := buf.Bytes()
+	if key != nil {
+		// if a key is provided, encrypt the message
+		msg = key.Seal(nil, nonce, buf.Bytes(), nil)
+	}
+	return []byte(base64.URLEncoding.EncodeToString(msg)), nil
 }
 
 // push pushes the given data to IPFS by adding it to the nodes filesystem

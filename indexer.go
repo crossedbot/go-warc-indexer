@@ -3,6 +3,7 @@ package warcindexer
 import (
 	"bytes"
 	"context"
+	"crypto/cipher"
 	"io"
 	"os"
 	"path/filepath"
@@ -17,7 +18,14 @@ import (
 	"github.com/crossedbot/simplewarc"
 )
 
+const (
+	// Encryption Types
+	NoneEncryption   = "none"
+	AesGcmEncryption = "aes-gcm"
+)
+
 var (
+	// CDXJ Versioning
 	VersionKey   = "WARC-CDXJ"
 	VersionValue = "1.0"
 )
@@ -103,11 +111,19 @@ func (in *indexer) SetEncryptionKey(key, salt []byte) {
 // indexRecord indexes a single WARC record by parsing it and preparing the
 // header and payload separately before pushing to IPFS
 func (in *indexer) indexRecord(ref string, rec *simplewarc.Record) (*simplecdxj.Record, error) {
-	// generate encryption values
-	keyId := crypto.KeyId(in.key)
-	key, nonce, err := aes.NewKey(in.key, in.salt)
-	if err != nil {
-		return nil, err
+	var keyId []byte
+	var key cipher.AEAD
+	var nonce []byte
+	var err error
+	encMethod := NoneEncryption
+	if in.key != nil {
+		// generate encryption values
+		keyId = crypto.KeyId(in.key)
+		key, nonce, err = aes.NewKey(in.key, in.salt)
+		if err != nil {
+			return nil, err
+		}
+		encMethod = AesGcmEncryption
 	}
 	// parse the HTML content
 	resp, err := parseResponse(rec.Content)
@@ -153,7 +169,7 @@ func (in *indexer) indexRecord(ref string, rec *simplewarc.Record) (*simplecdxj.
 			locator:   locator,
 			title:     title,
 			keyId:     keyId,
-			encMethod: "aes-gcm",
+			encMethod: encMethod,
 			nonce:     nonce,
 		},
 		rec,
