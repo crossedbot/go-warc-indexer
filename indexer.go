@@ -116,7 +116,7 @@ func (in *indexer) indexRecord(ref string, rec *simplewarc.Record) (*simplecdxj.
 	var nonce []byte
 	var err error
 	encMethod := NoneEncryption
-	if in.key != nil {
+	if in.key != nil && len(in.key) > 0 {
 		// generate encryption values
 		keyId = crypto.KeyId(in.key)
 		key, nonce, err = aes.NewKey(in.key, in.salt)
