@@ -3,7 +3,9 @@ package warcindexer
 import (
 	"bytes"
 	"compress/gzip"
+	"crypto/cipher"
 	"encoding/base64"
+	"io"
 	"io/ioutil"
 	"testing"
 
@@ -41,24 +43,38 @@ func TestCompress(t *testing.T) {
 }
 
 func TestPrepare(t *testing.T) {
+	var aead cipher.AEAD
+	var nonce []byte
+	var err error
+
 	original := []byte("goodbyeworld")
-	key := []byte("helloworld")
-	salt := []byte("saltsalt")
-	aead, nonce, err := aes.NewKey(key, salt)
-	require.Nil(t, err)
 	r, err := compress(
 		bytes.NewReader(original),
 		simplewarc.GzipCompression,
 	)
 	require.Nil(t, err)
-	b, err := ioutil.ReadAll(r)
+	var buf bytes.Buffer
+	tee := io.TeeReader(r, &buf)
+
+	// without encyption
+	b, err := ioutil.ReadAll(tee)
 	require.Nil(t, err)
-	expected := []byte(
+	expected := []byte(base64.URLEncoding.EncodeToString(b))
+	actual, err := prepare(bytes.NewReader(original), aead, nonce)
+	require.Nil(t, err)
+	require.Equal(t, expected, actual)
+
+	// with encryption
+	key := []byte("helloworld")
+	salt := []byte("saltsalt")
+	aead, nonce, err = aes.NewKey(key, salt)
+	require.Nil(t, err)
+	expected = []byte(
 		base64.URLEncoding.EncodeToString(
-			aead.Seal(nil, nonce, b, nil),
+			aead.Seal(nil, nonce, buf.Bytes(), nil),
 		),
 	)
-	actual, err := prepare(bytes.NewReader(original), aead, nonce)
+	actual, err = prepare(bytes.NewReader(original), aead, nonce)
 	require.Nil(t, err)
 	require.Equal(t, expected, actual)
 }
