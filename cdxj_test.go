@@ -3,6 +3,7 @@ package warcindexer
 import (
 	"bytes"
 	"crypto/sha1"
+	"encoding/base32"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -44,7 +45,8 @@ func TestCdxjHeader(t *testing.T) {
 
 func TestCdxjRecord(t *testing.T) {
 	content := []byte("Hello World")
-	sha := sha1.Sum(content)
+	sha1sum := sha1.Sum(content)
+	sha := base32.StdEncoding.EncodeToString(sha1sum[:])
 	ts, err := time.Parse(time.RFC3339, "2009-11-10T23:12:00+01:00")
 	require.Nil(t, err)
 	warc := &simplewarc.Record{
@@ -70,7 +72,7 @@ func TestCdxjRecord(t *testing.T) {
 	jb := JsonBlock{
 		Uri:              warc.Header["warc-target-uri"],
 		Ref:              fmt.Sprintf("warcfile:%s#%d", meta.ref, warc.Offset),
-		Sha:              string(sha[:]),
+		Sha:              sha,
 		Hsc:              meta.hsc,
 		Mct:              meta.mct,
 		Rid:              warc.Header["warc-record-id"],
@@ -95,13 +97,7 @@ func TestCdxjRecord(t *testing.T) {
 
 func TestSha1Sum(t *testing.T) {
 	r := bytes.NewReader([]byte("helloworld"))
-	expected := string([]byte{
-		0x6a, 0xdf, 0xb1, 0x83,
-		0xa4, 0xa2, 0xc9, 0x4a,
-		0x2f, 0x92, 0xda, 0xb5,
-		0xad, 0xe7, 0x62, 0xa4,
-		0x78, 0x89, 0xa5, 0xa1,
-	})
+	expected := "NLP3DA5EULEUUL4S3K223Z3CUR4ITJNB"
 	actual, err := sha1Sum(r)
 	require.Nil(t, err)
 	require.Equal(t, expected, actual)

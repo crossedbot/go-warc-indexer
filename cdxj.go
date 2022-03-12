@@ -2,6 +2,7 @@ package warcindexer
 
 import (
 	"crypto/sha1"
+	"encoding/base32"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -106,12 +107,13 @@ func cdxjRecord(md metadata, rec *simplewarc.Record) (*simplecdxj.Record, error)
 	}, nil
 }
 
-// sha1Sum returns the sha1 sum for the contents of the given reader
+// sha1Sum returns the Base32 encoded SHA-1 digest of the contents in the given
+// reader
 func sha1Sum(r io.Reader) (string, error) {
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
 		return "", err
 	}
 	sum := sha1.Sum(b)
-	return string(sum[:]), nil
+	return base32.StdEncoding.EncodeToString(sum[:]), nil
 }
